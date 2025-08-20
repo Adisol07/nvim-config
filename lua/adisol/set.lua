@@ -20,6 +20,12 @@ vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
 
+vim.g.have_nerd_font = true
+
+vim.schedule(function()
+  vim.opt.clipboard = 'unnamedplus'
+end)
+
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
@@ -27,3 +33,11 @@ vim.opt.isfname:append("@-@")
 vim.opt.updatetime = 50
 
 vim.g.mapleader = " "
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+})
