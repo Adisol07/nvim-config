@@ -8,3 +8,10 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 vim.keymap.set('n', '<leader>b', '<C-^>', { noremap = true, desc = 'Switch to previous buffer' })
+
+vim.keymap.set('n', '<leader>vc', ':CodeCompanionChat<enter>')
+vim.keymap.set('n', '<leader>ve', ':CodeCompanion ')
+vim.keymap.set('v', '<leader>ve', ':CodeCompanion ')
+vim.keymap.set('v', '<leader>vc', ':CodeCompanionChat<enter>')
+vim.keymap.set('n', '<leader>va', ':CodeCompanionActions<enter>')
+vim.keymap.set('v', '<leader>va', ':CodeCompanionActions<enter>')

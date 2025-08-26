@@ -9,34 +9,6 @@ local root_files = {
   '.git',
 }
 
-local omnisharp_extended_on_attach = function(client, bufnr)
-  local opts = { noremap = true, silent = true, buffer = bufnr }
-
-  if vim.bo[bufnr].filetype == 'cs' then
-    -- For definition
-    vim.keymap.set('n', 'gd', function()
-      require('omnisharp_extended').telescope_lsp_definitions()
-    end, opts)
-
-    vim.keymap.set('n', 'gt', function()
-      require('omnisharp_extended').telescope_lsp_type_definitions()
-    end, opts)
-
-    vim.keymap.set('n', 'gr', function()
-      require('omnisharp_extended').telescope_lsp_references()
-    end, opts)
-
-    vim.keymap.set('n', 'gi', function()
-      require('omnisharp_extended').telescope_lsp_implementations()
-    end, opts)
-  else
-    vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, opts)
-    vim.keymap.set('n', 'gt', require('telescope.builtin').lsp_type_definitions, opts)
-    vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, opts)
-    vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_implementations, opts)
-  end
-end
-
 return {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -67,14 +39,18 @@ return {
             cmp_lsp.default_capabilities())
 
         require("fidget").setup({})
-        require("mason").setup()
+        require("mason").setup({
+            registries = {
+                "github:mason-org/mason-registry",
+                "github:Crashdummyy/mason-registry",
+            },
+        })
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "lua_ls",
                 "rust_analyzer",
                 "gopls",
                 "tailwindcss",
-                "omnisharp"
             },
             handlers = {
                 function(server_name)
@@ -118,6 +94,15 @@ return {
                                 },
                             },
                         },
+                    })
+                end,
+                ["php"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.tailwindcss.setup({
+                        capabilities = capabilities,
+                        filetypes = { "html", "php" },
+
+                        settings = { },
                     })
                 end,
             }
@@ -166,7 +151,6 @@ return {
                     vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
                 end
 
-                -- TODO: gd not supported in omnisharp?
                 map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
                 map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
                 map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
