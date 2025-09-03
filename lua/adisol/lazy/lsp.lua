@@ -1,12 +1,12 @@
 local root_files = {
-  '.luarc.json',
-  '.luarc.jsonc',
-  '.luacheckrc',
-  '.stylua.toml',
-  'stylua.toml',
-  'selene.toml',
-  'selene.yml',
-  '.git',
+    '.luarc.json',
+    '.luarc.jsonc',
+    '.luacheckrc',
+    '.stylua.toml',
+    'stylua.toml',
+    'selene.toml',
+    'selene.yml',
+    '.git',
 }
 
 return {
@@ -23,6 +23,8 @@ return {
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
         "j-hui/fidget.nvim",
+        "theHamsta/nvim-dap-virtual-text",
+        "rcarriga/nvim-dap-ui"
     },
 
     config = function()
@@ -102,7 +104,7 @@ return {
                         capabilities = capabilities,
                         filetypes = { "html", "php" },
 
-                        settings = { },
+                        settings = {},
                     })
                 end,
             }
@@ -161,6 +163,14 @@ return {
                 map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
                 map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
+                map('<leader>ff', function()
+                    require("conform").format({
+                        lsp_fallback = true,
+                        async = false,
+                        timeout_ms = 1000,
+                    })
+                end, '[F]ormat buffer')
+
                 local client = vim.lsp.get_client_by_id(event.data.client_id)
                 if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
                     local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
@@ -183,6 +193,13 @@ return {
                             vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
                         end,
                     })
+
+                    vim.api.nvim_create_autocmd("BufWritePre", {
+                        pattern = "*",
+                        callback = function(args)
+                            require("conform").format({ bufnr = args.buf, lsp_fallback = true })
+                        end,
+                    })
                 end
 
                 if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
@@ -192,5 +209,28 @@ return {
                 end
             end,
         })
+
+        local dap = require('dap')
+        dap.adapters.coreclr = {
+            type = "executable",
+            command = "/Users/adisol/netcoredbg/netcoredbg",
+            args = { "--interpreter=vscode" },
+        }
+        dap.configurations.cs = {
+            {
+                type = "coreclr",
+                name = "Launch - dotnet",
+                request = "launch",
+                program = function()
+                    return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+                end,
+            },
+            {
+                type = "coreclr",
+                name = "Attach to process",
+                request = "attach",
+                processId = require('dap.utils').pick_process,
+            },
+        }
     end
 }

@@ -4,63 +4,65 @@ return {
         cmd = { 'CodeCompanion', 'CodeCompanionActions', 'CodeCompanionChat' },
 
         adapters = {
-            anthropic = function()
-                return require("codecompanion.adapters").extend("anthropic", {
-                    env = {
-                        api_key = "cmd: echo $CODECOMPANION_ANTHROPIC_API_KEY",
-                    },
-                    schema = {
-                        model = {
-                            default = 'claude-3-5-sonnet-20241022',
+            http = {
+                anthropic = function()
+                    return require("codecompanion.adapters").extend("anthropic", {
+                        env = {
+                            api_key = "cmd: echo $CODECOMPANION_ANTHROPIC_API_KEY",
                         },
-                    },
-                })
-            end,
-            openai = function()
-                return require("codecompanion.adapters").extend("openai", {
-                    env = {
-                        api_key = "cmd: echo $CODECOMPANION_OPENAI_API_KEY",
-                    },
-                    schema = {
-                        model = {
-                            default = 'gpt-5-mini',
+                        schema = {
+                            model = {
+                                default = 'claude-3-5-sonnet-20241022',
+                            },
                         },
-                        reasoning_effort = {
-                            default = 'low',
+                    })
+                end,
+                openai = function()
+                    return require("codecompanion.adapters").extend("openai", {
+                        env = {
+                            api_key = "cmd: echo $CODECOMPANION_OPENAI_API_KEY",
                         },
-                    },
-                })
-            end,
-            tavily = function()
-                return require('codecompanion.adapters').extend('tavily', {
-                    env = {
-                        api_key = 'cmd: echo $CODECOMPANION_TAVILY_API_KEY',
-                    },
-                    opts = {
-                        topic = 'general',
-                        search_depth = 'advanced',
-                        chunks_per_source = 3,
-                        max_results = 15,
-                        include_answer = true,
-                        include_raw_content = true,
-                    },
-                })
-            end,
-            openrouter = function()
-                return require("codecompanion.adapters").extend("openai_compatible", {
-                    name = 'openrouter',
-                    env = {
-                        url = "https://openrouter.ai/api",
-                        api_key = "cmd: echo $CODECOMPANION_OPENROUTER_API_KEY",
-                        chat_url = "/v1/chat/completions",
-                    },
-                    schema = {
-                        model = {
-                            default = "x-ai/grok-3-mini",
+                        schema = {
+                            model = {
+                                default = 'gpt-5-mini',
+                            },
+                            reasoning_effort = {
+                                default = 'low',
+                            },
                         },
-                    },
-                })
-            end,
+                    })
+                end,
+                tavily = function()
+                    return require('codecompanion.adapters').extend('tavily', {
+                        env = {
+                            api_key = 'cmd: echo $CODECOMPANION_TAVILY_API_KEY',
+                        },
+                        opts = {
+                            topic = 'general',
+                            search_depth = 'advanced',
+                            chunks_per_source = 3,
+                            max_results = 15,
+                            include_answer = true,
+                            include_raw_content = true,
+                        },
+                    })
+                end,
+                openrouter = function()
+                    return require("codecompanion.adapters").extend("openai_compatible", {
+                        name = 'openrouter',
+                        env = {
+                            url = "https://openrouter.ai/api",
+                            api_key = "cmd: echo $CODECOMPANION_OPENROUTER_API_KEY",
+                            chat_url = "/v1/chat/completions",
+                        },
+                        schema = {
+                            model = {
+                                default = "x-ai/grok-3-mini",
+                            },
+                        },
+                    })
+                end,
+            }
         },
 
         strategies = {
