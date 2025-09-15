@@ -43,3 +43,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank()
     end,
 })
+
+--  INFO: Hiding commandline:
+-- vim.o.laststatus = 3
+-- vim.o.cmdheight = 0
+-- vim.o.showmode = false
+-- vim.o.showcmd = true
+-- vim.o.showcmdloc = "statusline"
