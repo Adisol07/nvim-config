@@ -12,7 +12,7 @@ return {
                         },
                         schema = {
                             model = {
-                                default = 'claude-3-5-sonnet-20241022',
+                                default = 'claude-sonnet-4-5-20250929',
                             },
                         },
                     })
@@ -57,17 +57,32 @@ return {
                         },
                         schema = {
                             model = {
-                                default = "x-ai/grok-3-mini",
+                                default = "x-ai/grok-code-fast-1",
                             },
                         },
                     })
                 end,
+                -- openwebui = function()
+                --     return require("codecompanion.adapters").extend("openai_compatible", {
+                --         name = 'openwebui',
+                --         env = {
+                --             url = "https://openwebui.adisol.dev/",
+                --             api_key = "cmd: echo $OPENWEBUI_API_KEY",
+                --             chat_url = "api/v1/chat/completions",
+                --         },
+                --         schema = {
+                --             model = {
+                --                 default = "grok-code-fast",
+                --             },
+                --         },
+                --     })
+                -- end,
             }
         },
 
         strategies = {
             chat = {
-                adapter = 'openai',
+                adapter = 'anthropic',
             },
             -- inline = {
             --     adapter = "copilot",

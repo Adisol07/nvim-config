@@ -1,4 +1,4 @@
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+-- vim.keymap.set("n", "<leader>e", vim.cmd.Ex)
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
@@ -15,3 +15,6 @@ vim.keymap.set('v', '<leader>ve', ':CodeCompanion ')
 vim.keymap.set('v', '<leader>vc', ':CodeCompanionChat<enter>')
 vim.keymap.set('n', '<leader>va', ':CodeCompanionActions<enter>')
 vim.keymap.set('v', '<leader>va', ':CodeCompanionActions<enter>')
+
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { noremap = true })
+vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>", { noremap = true })
