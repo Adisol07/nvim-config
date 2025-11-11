@@ -18,3 +18,5 @@ vim.keymap.set('v', '<leader>va', ':CodeCompanionActions<enter>')
 
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>", { noremap = true })
+
+vim.keymap.set("n", "<leader>gd", ":Git diff %<CR>", { noremap = true })
