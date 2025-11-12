@@ -20,3 +20,6 @@ vim.keymap.set("n", "-", "<CMD>Oil<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>", { noremap = true })
 
 vim.keymap.set("n", "<leader>gd", ":Git diff %<CR>", { noremap = true })
+
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y')
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>p', '"+p')
