@@ -57,6 +57,22 @@ return {
                         },
                         schema = {
                             model = {
+                                default = "moonshotai/kimi-k2-thinking",
+                                -- default = "x-ai/grok-code-fast-1",
+                            },
+                        },
+                    })
+                end,
+                inline_openrouter = function()
+                    return require("codecompanion.adapters").extend("openai_compatible", {
+                        name = 'openrouter',
+                        env = {
+                            url = "https://openrouter.ai/api",
+                            api_key = "cmd: echo $CODECOMPANION_OPENROUTER_API_KEY",
+                            chat_url = "/v1/chat/completions",
+                        },
+                        schema = {
+                            model = {
                                 default = "x-ai/grok-code-fast-1",
                             },
                         },
@@ -82,7 +98,10 @@ return {
 
         strategies = {
             chat = {
-                adapter = 'anthropic',
+                adapter = 'openrouter',
+            },
+            inline = {
+                adapter = 'inline_openrouter',
             },
             -- inline = {
             --     adapter = "copilot",

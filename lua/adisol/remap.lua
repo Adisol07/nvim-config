@@ -23,3 +23,11 @@ vim.keymap.set("n", "<leader>gd", ":Git diff %<CR>", { noremap = true })
 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>p', '"+p')
+
+vim.keymap.set("n", "K", vim.lsp.buf.hover)
+
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+vim.keymap.set('i', '(', '()<Esc>i');
+vim.keymap.set('i', '[', '[]<Esc>i');
+vim.keymap.set('i', '{', '{}<Esc>i');

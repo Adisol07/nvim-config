@@ -107,6 +107,17 @@ return {
                         settings = {},
                     })
                 end,
+                ["clangd"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.clangd.setup({
+                        capabilities = capabilities,
+                        filetypes = { "c", "cpp", "objc", "objcpp" },
+                        settings = {},
+                        init_options = {
+                            fallbackFlags = { '--std=c++20' }
+                        },
+                    })
+                end,
             }
         })
 
