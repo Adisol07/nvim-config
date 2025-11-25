@@ -116,7 +116,7 @@ return {
 				adapter = 'openrouter',
 			},
 			inline = {
-				adapter = 'minimax_m2_openrouter',
+				adapter = 'inline_openrouter',
 			},
 			-- inline = {
 			--     adapter = "copilot",

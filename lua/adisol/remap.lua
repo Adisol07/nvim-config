@@ -33,3 +33,4 @@ vim.keymap.set('i', '[', '[]<Esc>i');
 vim.keymap.set('i', '{', '{}<Esc>i');
 
 vim.keymap.set('n', 'gl', '$')
+vim.keymap.set('n', '<leader><backspace>', ':q<CR>')
