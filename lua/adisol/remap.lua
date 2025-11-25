@@ -31,3 +31,5 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('i', '(', '()<Esc>i');
 vim.keymap.set('i', '[', '[]<Esc>i');
 vim.keymap.set('i', '{', '{}<Esc>i');
+
+vim.keymap.set('n', 'gl', '$')
