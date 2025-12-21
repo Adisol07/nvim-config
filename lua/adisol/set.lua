@@ -31,6 +31,7 @@ vim.opt.termguicolors = true
 
 vim.g.have_nerd_font = true
 
+--  INFO: Using system clipboard:
 -- vim.schedule(function()
 --   vim.opt.clipboard = 'unnamedplus'
 -- end)
@@ -43,6 +44,8 @@ vim.opt.updatetime = 50
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+vim.api.nvim_create_user_command("Sex", "Oil", { bang = true })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",

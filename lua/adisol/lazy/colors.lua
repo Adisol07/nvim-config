@@ -1,4 +1,5 @@
-local transparent = true
+local transparent = false
+local colormode = true
 
 function SetColorscheme(color)
   color = color or "rose-pine"
@@ -8,6 +9,16 @@ function SetColorscheme(color)
     vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+  else
+    if colormode then
+      vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
+      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#000000" })
+    else
+      vim.api.nvim_set_hl(0, "Normal", { bg = "#FFFFFF" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#FFFFFF" })
+      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#FFFFFF" })
+    end
   end
 end
 
@@ -19,10 +30,27 @@ function ToggleTransparency()
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
   else
-    vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
-    vim.api.nvim_set_hl(0, "SignColumn", { bg = "#000000" })
+    if colormode then
+      vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
+      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#000000" })
+    else
+      vim.api.nvim_set_hl(0, "Normal", { bg = "#FFFFFF" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#FFFFFF" })
+      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#FFFFFF" })
+    end
   end
+end
+
+function ToggleColormode()
+  colormode = not colormode
+  if colormode then
+    SetColorscheme("vague")
+  else
+    SetColorscheme("catppuccin-latte")
+  end
+  ToggleTransparency()
+  ToggleTransparency()
 end
 
 return {
@@ -69,6 +97,16 @@ return {
       })
 
       -- SetColorscheme("cyberdream");
+    end,
+  },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = false,
+    config = function()
+      require("catppuccin").setup({
+        disable_background = true,
+      })
     end,
   },
 }
