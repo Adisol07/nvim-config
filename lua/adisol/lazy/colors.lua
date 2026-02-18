@@ -1,5 +1,5 @@
-local transparent = false
-local colormode = true
+local transparent = true
+local background = "#090909"
 
 function SetColorscheme(color)
   color = color or "rose-pine"
@@ -10,15 +10,9 @@ function SetColorscheme(color)
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
   else
-    if colormode then
-      vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
-      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#000000" })
-    else
-      vim.api.nvim_set_hl(0, "Normal", { bg = "#FFFFFF" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#FFFFFF" })
-      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#FFFFFF" })
-    end
+    vim.api.nvim_set_hl(0, "Normal", { bg = background })
+    vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
+    vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
   end
 end
 
@@ -30,27 +24,36 @@ function ToggleTransparency()
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
   else
-    if colormode then
-      vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#000000" })
-      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#000000" })
-    else
-      vim.api.nvim_set_hl(0, "Normal", { bg = "#FFFFFF" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#FFFFFF" })
-      vim.api.nvim_set_hl(0, "SignColumn", { bg = "#FFFFFF" })
-    end
+    vim.api.nvim_set_hl(0, "Normal", { bg = background })
+    vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
+    vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
   end
 end
 
-function ToggleColormode()
-  colormode = not colormode
-  if colormode then
-    SetColorscheme("vague")
-  else
-    SetColorscheme("catppuccin-latte")
+function SetBackground(color)
+  background = color
+  vim.api.nvim_set_hl(0, "Normal", { bg = background })
+  vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
+  vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
+end
+
+function ResetBackground()
+  background = "#090909"
+  vim.api.nvim_set_hl(0, "Normal", { bg = background })
+  vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
+  vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
+end
+
+function Hiroshima()
+  transparent = false
+  vim.cmd.colorscheme("tokyonight")
+  local normal_hl = vim.api.nvim_get_hl(0, { name = "Normal" })
+  if normal_hl.bg then
+    background = string.format("#%06x", normal_hl.bg)
+    vim.api.nvim_set_hl(0, "Normal", { bg = background })
+    vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
+    vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
   end
-  ToggleTransparency()
-  ToggleTransparency()
 end
 
 return {
@@ -76,7 +79,7 @@ return {
         disable_background = true,
       })
 
-      SetColorscheme("vague")
+      -- SetColorscheme("vague")
     end,
   },
   {
@@ -107,6 +110,32 @@ return {
       require("catppuccin").setup({
         disable_background = true,
       })
+
+      -- SetColorscheme("catppuccin-mocha")
+    end,
+  },
+  {
+    "rebelot/kanagawa.nvim",
+    lazy = false,
+    config = function()
+      require("kanagawa").setup({
+        theme = "wave",
+      })
+
+      -- SetColorscheme("kanagawa")
+      -- vim.cmd("KanagawaCompile")
+    end,
+  },
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    opts = {},
+  },
+  {
+    "mellow-theme/mellow.nvim",
+    lazy = false,
+    config = function()
+      SetColorscheme("mellow")
     end,
   },
 }

@@ -5,7 +5,7 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = false
-vim.opt.wrap = true
+vim.opt.wrap = false
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.cursorline = true
@@ -45,7 +45,10 @@ vim.opt.updatetime = 50
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.api.nvim_create_user_command("Sex", "Oil", { bang = true })
+vim.api.nvim_create_user_command("Sex", function()
+  vim.cmd("vsplit")
+  vim.cmd("term")
+end, { bang = true })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",
