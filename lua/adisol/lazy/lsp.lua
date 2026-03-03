@@ -28,6 +28,8 @@ return {
   },
 
   config = function()
+    local lspFlags = { debounce_text_changes = 150 }
+
     require("conform").setup({
       formatters_by_ft = {
         lua = { "stylua" },
@@ -88,6 +90,7 @@ return {
         function(server_name)
           require("lspconfig")[server_name].setup({
             capabilities = capabilities,
+            flags = lspFlags,
           })
         end,
 
@@ -97,6 +100,7 @@ return {
           local lspconfig = require("lspconfig")
           lspconfig.tailwindcss.setup({
             capabilities = capabilities,
+            flags = lspFlags,
             filetypes = {
               "html",
               "css",
@@ -128,6 +132,7 @@ return {
           local lspconfig = require("lspconfig")
           lspconfig.clangd.setup({
             capabilities = capabilities,
+            flags = lspFlags,
             filetypes = { "c", "cpp", "objc", "objcpp" },
             settings = {},
             init_options = {
@@ -161,7 +166,7 @@ return {
     })
 
     vim.diagnostic.config({
-      -- update_in_insert = true,
+      update_in_insert = true,
       float = {
         focusable = false,
         style = "minimal",
