@@ -54,6 +54,7 @@ return {
     vim.lsp.config("lua_ls", {
       cmd = { "lua-language-server" },
       capabilities = capabilities,
+      root_markers = root_files,
       settings = {
         Lua = {
           runtime = { version = "LuaJIT" },
@@ -81,6 +82,7 @@ return {
         "rust_analyzer",
         "gopls",
         "tailwindcss",
+        "clangd",
       },
       handlers = {
         function(server_name)
@@ -105,6 +107,7 @@ return {
               "typescriptreact",
               "vue",
               "svelte",
+              "php",
             },
             settings = {
               tailwindCSS = {
@@ -119,15 +122,6 @@ return {
                 },
               },
             },
-          })
-        end,
-        ["php"] = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.tailwindcss.setup({
-            capabilities = capabilities,
-            filetypes = { "html", "php" },
-
-            settings = {},
           })
         end,
         ["clangd"] = function()
@@ -159,7 +153,6 @@ return {
         ["<C-Space>"] = cmp.mapping.complete(),
       }),
       sources = cmp.config.sources({
-        { name = "copilot", group_index = 2 },
         { name = "nvim_lsp" },
         { name = "luasnip" }, -- For luasnip users.
       }, {
@@ -178,6 +171,8 @@ return {
         prefix = "",
       },
     })
+
+    local lsp_format_augroup = vim.api.nvim_create_augroup("kickstart-lsp-format", { clear = true })
 
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -205,6 +200,20 @@ return {
           })
         end, "[F]ormat buffer")
 
+        vim.api.nvim_clear_autocmds({ group = lsp_format_augroup, buffer = event.buf })
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          buffer = event.buf,
+          group = lsp_format_augroup,
+          callback = function(args)
+            require("conform").format({
+              bufnr = args.buf,
+              lsp_fallback = true,
+              async = false,
+              timeout_ms = 1000,
+            })
+          end,
+        })
+
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
           local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
@@ -225,13 +234,6 @@ return {
             callback = function(event2)
               vim.lsp.buf.clear_references()
               vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event2.buf })
-            end,
-          })
-
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            pattern = "*",
-            callback = function(args)
-              require("conform").format({ bufnr = args.buf, lsp_fallback = true })
             end,
           })
         end

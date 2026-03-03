@@ -50,6 +50,21 @@ vim.api.nvim_create_user_command("Sex", function()
   vim.cmd("term")
 end, { bang = true })
 
+vim.api.nvim_create_user_command("RoslynClients", function()
+  local clients = vim.lsp.get_clients({ name = "roslyn" })
+  if #clients == 0 then
+    vim.notify("roslyn clients: 0", vim.log.levels.INFO)
+    return
+  end
+
+  local lines = {}
+  for _, client in ipairs(clients) do
+    lines[#lines + 1] = string.format("%s %s", client.id, client.config.root_dir or "nil")
+  end
+
+  vim.notify("roslyn clients:\n" .. table.concat(lines, "\n"), vim.log.levels.INFO)
+end, {})
+
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",
   group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
