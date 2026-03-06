@@ -1,22 +1,36 @@
 local transparent = true
 local background = "#090909"
+local statuslineBackground = "#101318"
+local statuslineInactiveBackground = "#0b0e14"
 
 function SetColorscheme(color)
   color = color or "rose-pine"
   vim.cmd.colorscheme(color)
 
+  local statusline = vim.api.nvim_get_hl(0, { name = "StatusLine", link = false })
+  local statusline_nc = vim.api.nvim_get_hl(0, { name = "StatusLineNC", link = false })
+
   if transparent then
     vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+    vim.api.nvim_set_hl(0, "StatusLine", { fg = statusline.fg, bg = statuslineBackground, bold = statusline.bold })
+    vim.api.nvim_set_hl(0, "StatusLineNC", { fg = statusline_nc.fg, bg = statuslineInactiveBackground, bold = statusline_nc.bold })
   else
     vim.api.nvim_set_hl(0, "Normal", { bg = background })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
+    vim.api.nvim_set_hl(0, "StatusLine", { fg = statusline.fg, bg = statuslineBackground, bold = statusline.bold })
+    vim.api.nvim_set_hl(0, "StatusLineNC", { fg = statusline_nc.fg, bg = statuslineInactiveBackground, bold = statusline_nc.bold })
   end
 
   vim.api.nvim_set_hl(0, "CursorLine", {
     bg = "#202020",
+  })
+  vim.api.nvim_set_hl(0, "YankHighlight", {
+    fg = "#101318",
+    bg = "#ecc48d",
+    bold = true,
   })
 end
 
@@ -27,10 +41,14 @@ function ToggleTransparency()
     vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
+    vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
+    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
   else
     vim.api.nvim_set_hl(0, "Normal", { bg = background })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
+    vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
+    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
   end
 end
 
@@ -39,6 +57,8 @@ function SetBackground(color)
   vim.api.nvim_set_hl(0, "Normal", { bg = background })
   vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
   vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
+  vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
+  vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
 end
 
 function ResetBackground()
@@ -46,6 +66,8 @@ function ResetBackground()
   vim.api.nvim_set_hl(0, "Normal", { bg = background })
   vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
   vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
+  vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
+  vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
 end
 
 function Hiroshima()
@@ -57,6 +79,8 @@ function Hiroshima()
     vim.api.nvim_set_hl(0, "Normal", { bg = background })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
+    vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
+    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
   end
 end
 
@@ -92,12 +116,6 @@ return {
     priority = 1000,
     config = function()
       require("night-owl").setup()
-
-      require("lualine").setup({
-        options = {
-          theme = "night-owl",
-        },
-      })
 
       SetColorscheme("night-owl")
     end,
