@@ -14,6 +14,10 @@ function SetColorscheme(color)
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
     vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
   end
+
+  vim.api.nvim_set_hl(0, "CursorLine", {
+    bg = "#202020",
+  })
 end
 
 function ToggleTransparency()
@@ -83,6 +87,22 @@ return {
     end,
   },
   {
+    "oxfist/night-owl.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("night-owl").setup()
+
+      require("lualine").setup({
+        options = {
+          theme = "night-owl",
+        },
+      })
+
+      SetColorscheme("night-owl")
+    end,
+  },
+  {
     "uhs-robert/oasis.nvim",
     lazy = false,
     config = function()
@@ -135,7 +155,7 @@ return {
     "mellow-theme/mellow.nvim",
     lazy = false,
     config = function()
-      SetColorscheme("mellow")
+      -- SetColorscheme("mellow")
     end,
   },
 }
