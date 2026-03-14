@@ -1,4 +1,0 @@
-WRN 2026-02-21T19:52:10.241 ?.43405    server_start:199: Failed to start server: operation not permitted: /var/folders/xy/c_53bs957rd00csy1g8m0zz40000gn/T/nvim.adisol/PPgVxF/nvim.43405.0
-WRN 2026-02-21T19:52:10.241 ?.43404    server_start:199: Failed to start server: operation not permitted: /var/folders/xy/c_53bs957rd00csy1g8m0zz40000gn/T/nvim.adisol/3CnTdV/nvim.43404.0
-WRN 2026-02-21T20:04:32.097 ?.44603    server_start:199: Failed to start server: operation not permitted: /var/folders/xy/c_53bs957rd00csy1g8m0zz40000gn/T/nvim.adisol/3wrKOV/nvim.44603.0
-WRN 2026-03-06T20:42:05.401 ?.37363    server_start:199: Failed to start server: operation not permitted: /var/folders/xy/c_53bs957rd00csy1g8m0zz40000gn/T/nvim.adisol/aOPFFg/nvim.37363.0
