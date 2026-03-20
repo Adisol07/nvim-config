@@ -1,8 +1,7 @@
 return {
   "olimorris/codecompanion.nvim",
+  cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat" },
   opts = {
-    cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat" },
-
     adapters = {
       http = {
         anthropic = function()

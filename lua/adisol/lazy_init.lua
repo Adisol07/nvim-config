@@ -13,5 +13,8 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
     spec = "adisol.lazy",
+    defaults = {
+      lazy = true,
+    },
     change_detection = { notify = false }
 })

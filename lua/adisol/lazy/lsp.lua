@@ -11,6 +11,7 @@ local root_files = {
 
 return {
   "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "stevearc/conform.nvim",
     "williamboman/mason.nvim",

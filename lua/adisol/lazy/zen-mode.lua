@@ -1,13 +1,17 @@
 return {
   {
-    "folke/twilight.nvim",
-    opts = {},
-  },
-  {
     "preservim/vim-pencil",
+    ft = { "markdown", "text", "gitcommit" },
   },
   {
     "folke/zen-mode.nvim",
+    cmd = { "ZenMode" },
+    dependencies = {
+      {
+        "folke/twilight.nvim",
+        opts = {},
+      },
+    },
     opts = {
       window = {
         backdrop = 1,

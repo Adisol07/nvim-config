@@ -1,6 +1,7 @@
 return {
   {
     "supermaven-inc/supermaven-nvim",
+    event = "InsertEnter",
     config = function()
       require("supermaven-nvim").setup({
         keymaps = {
@@ -12,13 +13,9 @@ return {
         color = {
           cterm = 244,
         },
-        log_level = "info",
+        log_level = "off",
         disable_inline_completion = false,
         disable_keymaps = false,
-        --  TODO: Look at this!
-        condition = function()
-          return false
-        end,
       })
     end,
   },

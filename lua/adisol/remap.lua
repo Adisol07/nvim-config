@@ -26,7 +26,6 @@ vim.keymap.set("v", "<leader>vc", ":CodeCompanionChat<enter>")
 vim.keymap.set("n", "<leader>va", ":CodeCompanionActions<enter>")
 vim.keymap.set("v", "<leader>va", ":CodeCompanionActions<enter>")
 
-vim.keymap.set("n", "<leader>dt", ":lua require('dapui').toggle()<CR>")
 vim.keymap.set("n", "<leader>db", ":DapToggleBreakpoint<CR>")
 vim.keymap.set("n", "<leader>dc", ":DapContinue<CR>")
 
