@@ -1,102 +1,181 @@
 local transparent = true
-local background = "#090909"
--- local background = "#05041A"
-local statuslineBackground = "#101318"
--- local statuslineBackground = "#0B0E37"
-local statuslineInactiveBackground = "#0b0e14"
--- local statuslineInactiveBackground = "#050336"
-local cursorlineBackground = "#202020"
--- local cursorlineBackground = "#050336"
+local appearanceMode = "dark"
+local appearanceTimer = nil
+local appearanceAuGroup = vim.api.nvim_create_augroup("adisol-appearance", { clear = true })
+
+local themeByMode = {
+  dark = "night-owl",
+  light = "rose-pine-dawn",
+}
+
+local defaultPalettes = {
+  dark = {
+    background = "#090909",
+    statuslineBackground = "#101318",
+    statuslineInactiveBackground = "#0b0e14",
+    cursorlineBackground = "#202020",
+    yank = {
+      fg = "#101318",
+      bg = "#ecc48d",
+      bold = true,
+    },
+  },
+  light = {
+    background = "#f7f7f7",
+    statuslineBackground = "#ece7de",
+    statuslineInactiveBackground = "#f3efe8",
+    cursorlineBackground = "#efe9df",
+    yank = {
+      fg = "#f7f7f7",
+      bg = "#907aa9",
+      bold = true,
+    },
+  },
+}
+
+local backgroundOverrides = {
+  dark = nil,
+  light = nil,
+}
+
+local function getAppearanceMode()
+  return appearanceMode or "dark"
+end
+
+local function getPalette(mode)
+  local palette = vim.deepcopy(defaultPalettes[mode or getAppearanceMode()])
+  local backgroundOverride = backgroundOverrides[mode or getAppearanceMode()]
+  if backgroundOverride ~= nil then
+    palette.background = backgroundOverride
+  end
+
+  return palette
+end
+
+local function applyHighlights(mode)
+  local palette = getPalette(mode)
+  local statusline = vim.api.nvim_get_hl(0, { name = "StatusLine", link = false })
+  local statuslineNc = vim.api.nvim_get_hl(0, { name = "StatusLineNC", link = false })
+  local normalBackground = transparent and "none" or palette.background
+
+  vim.api.nvim_set_hl(0, "Normal", { bg = normalBackground })
+  vim.api.nvim_set_hl(0, "NormalFloat", { bg = normalBackground })
+  vim.api.nvim_set_hl(0, "SignColumn", { bg = normalBackground })
+  vim.api.nvim_set_hl(0, "StatusLine", {
+    fg = statusline.fg,
+    bg = palette.statuslineBackground,
+    bold = statusline.bold,
+  })
+  vim.api.nvim_set_hl(0, "StatusLineNC", {
+    fg = statuslineNc.fg,
+    bg = palette.statuslineInactiveBackground,
+    bold = statuslineNc.bold,
+  })
+  vim.api.nvim_set_hl(0, "CursorLine", { bg = palette.cursorlineBackground })
+  vim.api.nvim_set_hl(0, "YankHighlight", palette.yank)
+end
+
+local function DetectAppearance()
+  vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" })
+
+  if vim.v.shell_error == 0 then
+    return "dark"
+  end
+
+  return "light"
+end
+
+local function ApplyAppearanceTheme(mode)
+  local nextMode = mode or DetectAppearance()
+  local colorscheme = themeByMode[nextMode] or themeByMode.dark
+
+  appearanceMode = nextMode
+  vim.g.AppearanceMode = nextMode
+  vim.opt.background = nextMode
+
+  local ok, errorMessage = pcall(vim.cmd.colorscheme, colorscheme)
+  if not ok then
+    vim.notify(errorMessage, vim.log.levels.ERROR)
+    return
+  end
+
+  applyHighlights(nextMode)
+end
+
+local function SyncAppearanceTheme()
+  local nextMode = DetectAppearance()
+  if nextMode ~= getAppearanceMode() then
+    ApplyAppearanceTheme(nextMode)
+    return
+  end
+
+  applyHighlights(nextMode)
+end
+
+local function StartAppearanceWatcher()
+  if appearanceTimer ~= nil then
+    return
+  end
+
+  appearanceTimer = vim.uv.new_timer()
+  if appearanceTimer == nil then
+    return
+  end
+
+  appearanceTimer:start(5000, 5000, vim.schedule_wrap(SyncAppearanceTheme))
+
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = appearanceAuGroup,
+    callback = function()
+      if appearanceTimer == nil then
+        return
+      end
+
+      appearanceTimer:stop()
+      appearanceTimer:close()
+      appearanceTimer = nil
+    end,
+  })
+end
 
 function SetColorscheme(color)
-  color = color or "rose-pine"
-  vim.cmd.colorscheme(color)
+  local nextMode = getAppearanceMode()
 
-  local statusline = vim.api.nvim_get_hl(0, { name = "StatusLine", link = false })
-  local statusline_nc = vim.api.nvim_get_hl(0, { name = "StatusLineNC", link = false })
-
-  if transparent then
-    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-    vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
-    vim.api.nvim_set_hl(0, "StatusLine", { fg = statusline.fg, bg = statuslineBackground, bold = statusline.bold })
-    vim.api.nvim_set_hl(
-      0,
-      "StatusLineNC",
-      { fg = statusline_nc.fg, bg = statuslineInactiveBackground, bold = statusline_nc.bold }
-    )
-  else
-    vim.api.nvim_set_hl(0, "Normal", { bg = background })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
-    vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
-    vim.api.nvim_set_hl(0, "StatusLine", { fg = statusline.fg, bg = statuslineBackground, bold = statusline.bold })
-    vim.api.nvim_set_hl(
-      0,
-      "StatusLineNC",
-      { fg = statusline_nc.fg, bg = statuslineInactiveBackground, bold = statusline_nc.bold }
-    )
+  if color == themeByMode.light then
+    nextMode = "light"
+  elseif color == themeByMode.dark then
+    nextMode = "dark"
   end
-  ResetBackground()
 
-  vim.api.nvim_set_hl(0, "CursorLine", {
-    bg = cursorlineBackground,
-  })
-  vim.api.nvim_set_hl(0, "YankHighlight", {
-    fg = "#101318",
-    bg = "#ecc48d",
-    bold = true,
-  })
+  appearanceMode = nextMode
+  vim.g.AppearanceMode = nextMode
+  vim.opt.background = nextMode
+  vim.cmd.colorscheme(color or themeByMode[nextMode])
+  applyHighlights(nextMode)
 end
 
 function ToggleTransparency()
   transparent = not transparent
-
-  if transparent then
-    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-    vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
-    vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
-    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
-  else
-    vim.api.nvim_set_hl(0, "Normal", { bg = background })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
-    vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
-    vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
-    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
-  end
+  applyHighlights(getAppearanceMode())
 end
 
 function SetBackground(color)
-  background = color
-  vim.api.nvim_set_hl(0, "Normal", { bg = background })
-  vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
-  vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
-  vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
-  vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
+  backgroundOverrides[getAppearanceMode()] = color
+  applyHighlights(getAppearanceMode())
 end
 
 function ResetBackground()
-  background = "#090909"
-  -- background = "#05041A"
-  vim.api.nvim_set_hl(0, "Normal", { bg = background })
-  vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
-  vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
-  vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
-  vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
+  backgroundOverrides[getAppearanceMode()] = nil
+  applyHighlights(getAppearanceMode())
 end
 
 function Hiroshima()
   transparent = false
+  appearanceMode = "dark"
+  vim.g.AppearanceMode = "dark"
+  vim.opt.background = "dark"
   vim.cmd.colorscheme("tokyonight")
-  local normal_hl = vim.api.nvim_get_hl(0, { name = "Normal" })
-  if normal_hl.bg then
-    background = string.format("#%06x", normal_hl.bg)
-    vim.api.nvim_set_hl(0, "Normal", { bg = background })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = background })
-    vim.api.nvim_set_hl(0, "SignColumn", { bg = background })
-    vim.api.nvim_set_hl(0, "StatusLine", { bg = statuslineBackground })
-    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = statuslineInactiveBackground })
-  end
+  applyHighlights("dark")
 end
 
 return {
@@ -132,8 +211,10 @@ return {
     priority = 1000,
     config = function()
       require("night-owl").setup()
-
-      SetColorscheme("night-owl")
+      pcall(vim.api.nvim_del_user_command, "ThemeSync")
+      vim.api.nvim_create_user_command("ThemeSync", SyncAppearanceTheme, {})
+      ApplyAppearanceTheme(DetectAppearance())
+      StartAppearanceWatcher()
     end,
   },
   {

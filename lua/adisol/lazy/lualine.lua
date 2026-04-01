@@ -3,19 +3,33 @@ return {
     event = "VimEnter",
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      local palette = {
-        background = '#101318',
-        inactive = '#0b0e14',
-        surface = '#171b24',
-        surface_alt = '#1d2330',
-        text = '#d6deeb',
-        muted = '#7f8c98',
-        blue = '#82aaff',
-        cyan = '#7fdbca',
-        green = '#22da6e',
-        yellow = '#ecc48d',
-        red = '#ff5874',
-        purple = '#c792ea',
+      local palettes = {
+        dark = {
+          background = '#101318',
+          inactive = '#0b0e14',
+          surface = '#171b24',
+          text = '#d6deeb',
+          muted = '#7f8c98',
+          blue = '#82aaff',
+          cyan = '#7fdbca',
+          green = '#22da6e',
+          yellow = '#ecc48d',
+          red = '#ff5874',
+          purple = '#c792ea',
+        },
+        light = {
+          background = '#ece7de',
+          inactive = '#f3efe8',
+          surface = '#e3ddd3',
+          text = '#575279',
+          muted = '#797593',
+          blue = '#286983',
+          cyan = '#56949f',
+          green = '#618774',
+          yellow = '#ea9d34',
+          red = '#b4637a',
+          purple = '#907aa9',
+        },
       }
 
       local function getHighlight(name)
@@ -44,6 +58,7 @@ return {
       end
 
       local function makeTheme()
+        local palette = palettes[vim.g.AppearanceMode] or palettes.dark
         local active = makeSection(getHighlight('StatusLine'), palette.background, palette.text)
         local inactive = makeSection(getHighlight('StatusLineNC'), palette.inactive, palette.muted)
 
@@ -108,6 +123,8 @@ return {
       end
 
       local function setup()
+        local palette = palettes[vim.g.AppearanceMode] or palettes.dark
+
         require('lualine').setup({
           options = {
             icons_enabled = vim.g.have_nerd_font,
